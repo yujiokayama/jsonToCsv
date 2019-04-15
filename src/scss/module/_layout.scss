@@ -13,10 +13,18 @@
     overflow: auto;
 }
 
-#getCsvFile {
-    display: none;
+// 上下中央揃え
+.center-position {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  text-transform: uppercase;
 }
 
+
+// datepickerのリセット
 input[type="date"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }

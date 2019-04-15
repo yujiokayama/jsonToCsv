@@ -11,7 +11,13 @@
 </head>
 
 <body>
-
+    <div class="loadingActiveLayer"></div>
+    <div class="loadingIcon center-position">
+        <div class="fulfilling-bouncing-circle-spinner">
+            <div class="circle"></div>
+            <div class="orbit"></div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="row">
@@ -21,14 +27,16 @@
                 </label>
 
                 <div>
-                    <button id="getJsonData" class="btn-extend-border">JSONファイルを取得</button>
-                    <a id="getCsvFile" class="btn" download="sample.csv">ダウンロード</a>
+                    <button id="getJsonData" class="btn-extend-border asyncLoading">JSONファイルを取得</button>
                 </div>
 
                 <pre id="jsonDataLog"></pre>
             </div>
         </div>
     </div>
+
+
+
 
 
 
