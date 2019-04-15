@@ -8,8 +8,8 @@ else {
 }
 
 // カレンダーのvalueを取得
-var jsonToCsv = (function() {
-    document.addEventListener('DOMContentLoaded', function() {
+var jsonToCsv = (function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
         //今日の日時を表示
         var date = new Date(),
@@ -27,7 +27,7 @@ var jsonToCsv = (function() {
         fileNameDate.setAttribute('max', jsonFileName);
 
         // カレンダーが変更させれたら
-        fileNameDate.addEventListener('change', function() {
+        fileNameDate.addEventListener('change', function () {
             if (this.value != '') {
                 jsonFileName = fileNameDate.value.split('-').join('') + '.json';
                 // dlボタンを表示
@@ -43,16 +43,16 @@ var jsonToCsv = (function() {
         let bom = new Uint8Array([0xEF, 0xBB, 0xBF]),
             btn = document.getElementById('getCsvFile');
 
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             var blob = new Blob(['csv'], { 'type': 'text/csv' });
             btn.href = window.URL.createObjectURL(blob);
         });
 
         // JSONファイルの取得
-        var getJsonFiles = function() {
+        var getJsonFiles = function () {
             // ボタンをクリックしたとき
-            getJsonDataBtn.addEventListener('click', function() {
-                var url = '/jsonToCsv/lib/json/' + jsonFileName;
+            getJsonDataBtn.addEventListener('click', function () {
+                var url = '/lib/json/' + jsonFileName;
                 if (fileNameDate != '') {
                     fetch(url).then((response) => {
                         return response.json();
@@ -65,8 +65,6 @@ var jsonToCsv = (function() {
             }, false);
         };
         getJsonFiles();
-
-        // ローディングアニメーション
 
 
 

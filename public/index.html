@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>textLint</title>
+    <script src="./js/polyfill.js"></script>
+    <script src="./js/main.js"></script>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <label>
+                    <input type="date" id="fileNameDate" class="datepicker" min="2019-01-01">
+                </label>
+
+                <div>
+                    <button id="getJsonData" class="btn-extend-border">JSONファイルを取得</button>
+                    <a id="getCsvFile" class="btn" download="sample.csv">ダウンロード</a>
+                </div>
+
+                <pre id="jsonDataLog"></pre>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
