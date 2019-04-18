@@ -39,25 +39,41 @@ const jsonToCsv = (() => {
         // カレンダーが変更させれたら
         fileNameDate.addEventListener('change', function () {
             if (this.value != '') {
-                jsonFileName = fileNameDate.value.split('-').join('') + '.json';
+                jsonFileName = fileNameDate.value.split('-').join('');
             }
         }, false);
 
 
+        // _1から_8までのjsonファイルを取得する(デフォルトは8)
+        const getData = () => {
+            let fileCount = 8; //default [8]
+            let filePath = '/lib/json/' + jsonFileName;
+            let jsonDataFields;
+            let jsonDatas = [];
 
-        const getData = function () {
-            const filePath = '/lib/json/' + jsonFileName;
-            if (fileNameDate != '') {
-                fetch(filePath).then((response) => {
+            for (let i = 0; i < fileCount; i++) {
+                fetch(`${filePath}_${(1 + i)}.json`).then((response) => {
                     return response.json();
-                    // CSVダウンロードボタンを表示
                 }).then((json) => {
-                    document.querySelector('#jsonDataLog').innerHTML = JSON.stringify(json, null, ' ');
+                    // JSONデータ表示用フィールドを生成
+                    cleateDataFileds();
+                    // 各jsonデータを配列に格納
+                    jsonDatas.push(JSON.stringify(json, null, ' '));
                 }).catch((error) => {
-                    // CSVダウンロードボタンを非表示
                     alert('fileが存在しません');
                 });
             }
+            // JSONデータ表示用フィールドを取得
+            jsonDataFields = document.querySelectorAll('.jsonDataLog');
+            console.log(jsonDataFields);
+
+        };
+
+        // JSONデータを表示するエリアを生成
+        const cleateDataFileds = () => {
+            let jsonDataLogArea = document.querySelector('#jsonDataLogArea');
+            let jsonDataLogField = '<pre class="jsonDataLog"></pre>';
+            jsonDataLogArea.insertAdjacentHTML('afterbegin', jsonDataLogField);
         };
 
         // JSONファイル取得メソッド
