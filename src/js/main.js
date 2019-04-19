@@ -1,136 +1,107 @@
+import { DatePicker } from './module/datepicker';
 import { LoadingAnimation } from './module/loader';
+import { DataFields } from './module/datafileds';
 
-(() => {
-  // file APIが使えるかチェック
-  if (window.File) {
-    // File APIに関する処理を記述
-    console.log('File APIが実装されてます。');
-  } else {
-    console.log('本ブラウザではFile APIが使えません');
-  }
-})();
-
-// カレンダーのvalueを取得
 const jsonToCsv = (() => {
-  document.addEventListener(
-    'DOMContentLoaded',
-    function() {
-      //今日の日時を表示
-      let date = new Date(),
-        year = date.getFullYear(),
-        month = ('0' + (date.getMonth() + 1)).slice(-2),
-        day = ('0' + date.getDate()).slice(-2),
-        ymd = `${year}-${month}-${day}`,
-        fileNameDate = document.querySelector('#fileNameDate'),
-        getJsonDataBtn = document.querySelector('#getJsonData'),
-        getCsvFileBtn = document.querySelector('#getCsvFile'),
-        jsonFileName;
+    document.addEventListener('DOMContentLoaded', () => {
 
-      // loading classをインスタンス化
-      const nowLoading = new LoadingAnimation();
+        let fileNameDate = document.querySelector('#fileNameDate'),
+            getJsonDataBtn = document.querySelector('#getJsonData'),
+            getCsvFileBtn = document.querySelector('#getCsvFile'),
+            jsonFileName;
 
-      // デフォルトのファイル名（日付）
-      jsonFileName = fileNameDate.value = ymd;
-      // 取得できる日付を当日までとする
-      fileNameDate.setAttribute('max', jsonFileName);
+        // DatePicker classをインスタンス化
+        const datePicker = new DatePicker();
+        // Loading classをインスタンス化
+        const nowLoading = new LoadingAnimation();
+        // DataFields classをインスタンス化
+        const jsonDataFields = new DataFields();
 
-      // カレンダーが変更させれたら
-      fileNameDate.addEventListener(
-        'change',
-        function() {
-          if (this.value != '') {
+        // デフォルトの日付は当日
+        jsonFileName = fileNameDate.value = datePicker.ymd;
+        // 取得できる日付を当日までにする
+        fileNameDate.setAttribute('max', jsonFileName);
+
+        // カレンダーが変更させれたら
+        fileNameDate.addEventListener('change', () => {
             jsonFileName = fileNameDate.value.split('-').join('');
-          }
-        },
-        false
-      );
+        }, false);
 
-      // _1から_8までのjsonファイルを取得する(デフォルトは8)
-      const getData = () => {
-        let fileCount = 8; //default [8]
-        let filePath = '/lib/json/' + jsonFileName;
-        let jsonDatas = [];
 
-        for (let i = 0; i < fileCount; i++) {
-          fetch(`${filePath}_${1 + i}.json`)
-            .then(response => {
-              return response.json();
-            })
-            .then(json => {
-              // JSONデータ表示用フィールドを生成
-              cleateDataFileds();
-              // 各jsonデータを配列に格納
-              jsonDatas.push(JSON.stringify(json, null, ' '));
-            })
-            .catch(error => {
-              alert('fileが存在しません');
+        // 取得するファイルのパス
+        const getFilePath = (count) => {
+            let filePath = [];
+            for (let i = 0; i < count; i++) {
+                filePath.push(`/lib/json/${jsonFileName}_${1 + i}.json`);
+            }
+            return filePath;
+        };
+
+        // JSONを読み込む
+        const getFileData = async () => {
+            // 取得したfilepath
+            let filePathResults = getFilePath(8);
+            console.log(filePathResults);
+            console.log(await Promise.all(filePathResults.map(fetchFile)));
+            // fetch(filePath).then((response) => {
+            //     if (response.ok) {
+            //         return response.json();
+            //     }
+            //     throw new Error('JSONファイルを取得できませんでした。');
+            // }).then((json) => {
+
+            // }).catch((error) => {
+            //     console.error(error);
+            // });
+
+        };
+
+        const fetchFile = (url) => {
+            return fetch(url);
+        }
+
+        // ボタンをクリックしたとき
+        async function load() {
+            // ファイルを読み込む
+            const data = await fetch('sample.json');
+            // JSONとして解析
+            const obj = await data.json();
+            console.log(obj); // 結果: {name: "別所分校", classes: Array(2)}
+            // テキストを出力
+            document.querySelector('#log').innerHTML = JSON.stringify(obj, null, '  ');
+        }
+        load();
+
+
+
+
+        // JSONファイル取得メソッド
+        const getJsonFile = async () => {
+            // loading Start
+            await new Promise(resolve => {
+                nowLoading.loadStart();
+                resolve();
             });
-        }
-        console.log(jsonDatas);
-      };
+            // getJsonFile
+            await new Promise(resolve => {
+                getFilePath(8);
+                // JSONデータ表示用フィールドを一旦削除
+                jsonDataFields.removeDataFileds();
+                // JSONデータ表示用フィールドを生成
+                jsonDataFields.cleateDataFileds(8);
+                getFileData();
+                resolve();
+            });
+            // loading End
+            await new Promise(resolve => {
+                nowLoading.loadEnd();
+                resolve();
+            });
+        };
 
-      const getJsonFileUrl = url => {
-        return fetch(url);
-      };
-
-      const getJsonFiles = async () => {
-        let urls = [];
-        let fileResults = [];
-        let fileCount = 8;
-        let filePath = '/lib/json/' + jsonFileName;
-
-        for (let i = 0; i < fileCount; i++) {
-          urls.push(`${filePath}_${1 + i}.json`);
-        }
-        for (let url of urls) {
-          fileResults.push(getJsonFileUrl(url));
-        }
-        await Promise.all(fileResults);
-      };
-
-      // JSONデータを表示するエリアを生成
-      const cleateDataFileds = () => {
-        let jsonDataLogArea = document.querySelector('#jsonDataLogArea');
-        let jsonDataLogField = '<pre class="jsonDataLog"></pre>';
-        jsonDataLogArea.insertAdjacentHTML('afterbegin', jsonDataLogField);
-      };
-
-      // JSONデータ表示用フィールドを取得
-      let jsonDataFields = document.querySelectorAll('.jsonDataLog');
-
-      // JSONファイル取得メソッド
-      const getJsonFile = async () => {
-        // loading Start
-        await new Promise(resolve => {
-          setTimeout(() => {
-            nowLoading.loadStart();
-            resolve();
-          }, 0);
+        // ボタンをクリックしたら
+        getJsonDataBtn.addEventListener('click', () => {
+            getJsonFile();
         });
-        // getJsonFile
-        await new Promise(resolve => {
-          setTimeout(() => {
-            getData();
-            resolve();
-          }, 0);
-        });
-        // loading End
-        await new Promise(resolve => {
-          setTimeout(() => {
-            nowLoading.loadEnd();
-            resolve();
-          }, 0);
-        });
-        await new Promise(resolve => {
-          resolve();
-        });
-      };
-
-      // ボタンをクリックしたら
-      getJsonDataBtn.addEventListener('click', () => {
-        getJsonFile();
-      });
-    },
-    false
-  );
+    }, false);
 })();
