@@ -24,12 +24,17 @@ export class DataFields {
       this.dataFieldsArea.insertAdjacentHTML('afterbegin', this.dataFields);
     }
   }
+  // 表示エリアを取得
+  getDataFileds() {
+    const dataLogs = document.querySelectorAll('.dataLog');
+    return dataLogs;
+  }
   // 表示エリアを削除
   removeDataFileds() {
-    let dataLogs = document.querySelectorAll('.dataLog');
+    const dataLogs = document.querySelectorAll('.dataLog');
     // すでに表示用エリアがある場合
     if (document.querySelector('.dataLog') != null) {
-      dataLogs.forEach((e) => {
+      dataLogs.forEach(e => {
         e.remove();
       });
     }

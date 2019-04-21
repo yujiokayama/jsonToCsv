@@ -95,104 +95,73 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _module_loader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/loader */ "./src/js/module/loader.js");
+/* harmony import */ var _module_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/datepicker */ "./src/js/module/datepicker.js");
+/* harmony import */ var _module_loader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module/loader */ "./src/js/module/loader.js");
+/* harmony import */ var _module_datafileds__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./module/datafileds */ "./src/js/module/datafileds.js");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
 
-(function () {
-  // file APIが使えるかチェック
-  if (window.File) {
-    // File APIに関する処理を記述
-    console.log('File APIが実装されてます。');
-  } else {
-    console.log('本ブラウザではFile APIが使えません');
-  }
-})(); // カレンダーのvalueを取得
 
 
 var jsonToCsv = function () {
   document.addEventListener('DOMContentLoaded', function () {
-    //今日の日時を表示
-    var date = new Date(),
-        year = date.getFullYear(),
-        month = ('0' + (date.getMonth() + 1)).slice(-2),
-        day = ('0' + date.getDate()).slice(-2),
-        ymd = "".concat(year, "-").concat(month, "-").concat(day),
-        fileNameDate = document.querySelector('#fileNameDate'),
+    var fileNameDate = document.querySelector('#fileNameDate'),
         getJsonDataBtn = document.querySelector('#getJsonData'),
         getCsvFileBtn = document.querySelector('#getCsvFile'),
-        jsonFileName; // loading classをインスタンス化
+        jsonFileName; // DatePicker classをインスタンス化
 
-    var nowLoading = new _module_loader__WEBPACK_IMPORTED_MODULE_0__["LoadingAnimation"](); // デフォルトのファイル名（日付）
+    var datePicker = new _module_datepicker__WEBPACK_IMPORTED_MODULE_0__["DatePicker"](); // Loading classをインスタンス化
 
-    jsonFileName = fileNameDate.value = ymd; // 取得できる日付を当日までとする
+    var nowLoading = new _module_loader__WEBPACK_IMPORTED_MODULE_1__["LoadingAnimation"](); // DataFields classをインスタンス化
+
+    var jsonDataFields = new _module_datafileds__WEBPACK_IMPORTED_MODULE_2__["DataFields"](); // デフォルトの日付は当日
+
+    jsonFileName = fileNameDate.value = datePicker.ymd; // 取得できる日付を当日までにする
 
     fileNameDate.setAttribute('max', jsonFileName); // カレンダーが変更させれたら
 
     fileNameDate.addEventListener('change', function () {
-      if (this.value != '') {
-        jsonFileName = fileNameDate.value.split('-').join('');
+      jsonFileName = fileNameDate.value.split('-').join('');
+    }, false); // 取得するファイルのパス
+
+    var getFilePath = function getFilePath(count) {
+      var filePath = [];
+
+      for (var i = 0; i < count; i++) {
+        filePath.push("/lib/json/".concat(jsonFileName, "_").concat(1 + i, ".json"));
       }
-    }, false); // _1から_8までのjsonファイルを取得する(デフォルトは8)
 
-    var getData = function getData() {
-      var fileCount = 8; //default [8]
-
-      var filePath = '/lib/json/' + jsonFileName;
-
-      for (var i = 0; i < fileCount; i++) {
-        fetch("".concat(filePath, "_").concat(1 + i, ".json")).then(function (response) {
-          return response.json();
-        }).then(function (json) {
-          // jsonデータを各フィールドに表示
-          document.querySelectorAll('.jsonDataLog').innerHTML += JSON.stringify(json, null, ' ');
-        })["catch"](function (error) {
-          alert('fileが存在しません');
-        });
-      }
-    }; // JSONファイル取得メソッド
+      return filePath;
+    }; // JSONを読み込む
 
 
-    var getJsonFile =
+    var getFileData =
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee() {
+        var filePathResults;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return new Promise(function (resolve) {
-                  setTimeout(function () {
-                    nowLoading.loadStart();
-                    resolve();
-                  }, 0);
-                });
+                // 取得したfilepath
+                filePathResults = getFilePath(8);
+                console.log(filePathResults);
+                _context.t0 = console;
+                _context.next = 5;
+                return Promise.all(filePathResults.map(fetchFile));
 
-              case 2:
-                _context.next = 4;
-                return new Promise(function (resolve) {
-                  setTimeout(function () {
-                    getData();
-                    resolve();
-                  }, 4000);
-                });
+              case 5:
+                _context.t1 = _context.sent;
 
-              case 4:
-                _context.next = 6;
-                return new Promise(function (resolve) {
-                  setTimeout(function () {
-                    nowLoading.loadEnd();
-                    resolve();
-                  }, 0);
-                });
+                _context.t0.log.call(_context.t0, _context.t1);
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -200,8 +169,101 @@ var jsonToCsv = function () {
         }, _callee);
       }));
 
-      return function getJsonFile() {
+      return function getFileData() {
         return _ref.apply(this, arguments);
+      };
+    }();
+
+    var fetchFile = function fetchFile(url) {
+      return fetch(url);
+    }; // ボタンをクリックしたとき
+
+
+    function load() {
+      return _load.apply(this, arguments);
+    }
+
+    function _load() {
+      _load = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee3() {
+        var data, obj;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return fetch('sample.json');
+
+              case 2:
+                data = _context3.sent;
+                _context3.next = 5;
+                return data.json();
+
+              case 5:
+                obj = _context3.sent;
+                console.log(obj); // 結果: {name: "別所分校", classes: Array(2)}
+                // テキストを出力
+
+                document.querySelector('#log').innerHTML = JSON.stringify(obj, null, '  ');
+
+              case 8:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }));
+      return _load.apply(this, arguments);
+    }
+
+    load(); // JSONファイル取得メソッド
+
+    var getJsonFile =
+    /*#__PURE__*/
+    function () {
+      var _ref2 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2() {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return new Promise(function (resolve) {
+                  nowLoading.loadStart();
+                  resolve();
+                });
+
+              case 2:
+                _context2.next = 4;
+                return new Promise(function (resolve) {
+                  getFilePath(8); // JSONデータ表示用フィールドを一旦削除
+
+                  jsonDataFields.removeDataFileds(); // JSONデータ表示用フィールドを生成
+
+                  jsonDataFields.cleateDataFileds(8);
+                  getFileData();
+                  resolve();
+                });
+
+              case 4:
+                _context2.next = 6;
+                return new Promise(function (resolve) {
+                  nowLoading.loadEnd();
+                  resolve();
+                });
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function getJsonFile() {
+        return _ref2.apply(this, arguments);
       };
     }(); // ボタンをクリックしたら
 
@@ -211,6 +273,116 @@ var jsonToCsv = function () {
     });
   }, false);
 }();
+
+/***/ }),
+
+/***/ "./src/js/module/datafileds.js":
+/*!*************************************!*\
+  !*** ./src/js/module/datafileds.js ***!
+  \*************************************/
+/*! exports provided: DataFields */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DataFields", function() { return DataFields; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/*
+/////////////////////////////////////////////////////////////////////////
+DataFields
+/////////////////////////////////////////////////////////////////////////
+*/
+var DataFields =
+/*#__PURE__*/
+function () {
+  /*
+  //////////////////////////////
+  properties
+  //////////////////////////////
+  */
+  function DataFields() {
+    _classCallCheck(this, DataFields);
+
+    this.dataFieldsArea = document.querySelector('#DataLogArea');
+    this.dataFields = '<pre class="dataLog"></pre>';
+  }
+  /*
+  //////////////////////////////
+  methods
+  //////////////////////////////
+  */
+  // 表示エリアを生成
+
+
+  _createClass(DataFields, [{
+    key: "cleateDataFileds",
+    value: function cleateDataFileds(fileCount) {
+      for (var i = 0; i < fileCount; i++) {
+        this.dataFieldsArea.insertAdjacentHTML('afterbegin', this.dataFields);
+      }
+    } // 表示エリアを削除
+
+  }, {
+    key: "removeDataFileds",
+    value: function removeDataFileds() {
+      var dataLogs = document.querySelectorAll('.dataLog'); // すでに表示用エリアがある場合
+
+      if (document.querySelector('.dataLog') != null) {
+        dataLogs.forEach(function (e) {
+          e.remove();
+        });
+      }
+    }
+  }]);
+
+  return DataFields;
+}();
+
+/***/ }),
+
+/***/ "./src/js/module/datepicker.js":
+/*!*************************************!*\
+  !*** ./src/js/module/datepicker.js ***!
+  \*************************************/
+/*! exports provided: DatePicker */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatePicker", function() { return DatePicker; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*
+/////////////////////////////////////////////////////////////////////////
+DatePicker
+/////////////////////////////////////////////////////////////////////////
+*/
+var DatePicker =
+/*
+//////////////////////////////
+properties
+//////////////////////////////
+*/
+function DatePicker() {
+  _classCallCheck(this, DatePicker);
+
+  this.date = new Date();
+  this.year = this.date.getFullYear();
+  this.month = ('0' + (this.date.getMonth() + 1)).slice(-2);
+  this.day = ('0' + this.date.getDate()).slice(-2);
+  this.ymd = "".concat(this.year, "-").concat(this.month, "-").concat(this.day);
+}
+/*
+//////////////////////////////
+methods
+//////////////////////////////
+*/
+;
 
 /***/ }),
 
