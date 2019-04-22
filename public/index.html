@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>textLint</title>
+    <title>jsonToCsv</title>
     <script src="./js/polyfill.js"></script>
     <script src="./js/main.js"></script>
 
@@ -22,12 +22,15 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <label>
-                    <input type="date" id="fileNameDate" class="datepicker" min="2019-01-01">
-                </label>
 
-                <div>
-                    <button id="getJsonData" class="btn-extend-border asyncLoading">JSONファイルを一括取得</button>
+                <div class="d-flex">
+                    <div id="calenderField">
+                        <label>
+                            <input type="date" id="fileNameDate" class="datepicker" min="2019-01-01">
+                        </label>
+                    </div>
+                    <button id="getJsonDataAll" class="ml-3 asyncLoading">JSONファイルを一括取得</button>
+                    <a id="getCsvFileAll" class="asyncLoading ml-3" href="#" download="test.csv">CSV一括ダウンロード</a>
                 </div>
 
                 <!-- ここに各JSONファイルを取得する -->

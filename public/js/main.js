@@ -121,11 +121,7 @@ var jsonToCsv = function () {
 
     jsonFileName = fileNameDate.value = datePicker.ymd; // 取得できる日付を当日までにする
 
-    fileNameDate.setAttribute('max', jsonFileName); // カレンダーが変更させれたら
-
-    fileNameDate.addEventListener('change', function () {
-      jsonFileName = fileNameDate.value.split('-').join('');
-    }, false); // 取得するファイルのパス
+    fileNameDate.setAttribute('max', jsonFileName); // 取得するファイルのパス
 
     var getFilePath = function getFilePath(count) {
       var filePath = [];
@@ -135,7 +131,25 @@ var jsonToCsv = function () {
       }
 
       return filePath;
-    }; // JSONを読み込む
+    }; // 表示様フィールドを作成
+
+
+    var createFields = function createFields(count) {
+      // JSONデータ表示用フィールドを生成
+      jsonDataFields.cleateDataFileds(count);
+    }; //   const getFileData = () => {
+    //     const filePath = getFilePath(8);
+    //     const dataFields = jsonDataFields.getDataFileds();
+    //     for (let i = 0; i < dataFields.length; i++) {
+    //       fetch(filePath[i])
+    //         .then(response => {
+    //           return response.json();
+    //         })
+    //         .then(data => {
+    //           dataFields[i].innerHTML = JSON.stringify(data, null, ' ');
+    //         });
+    //     }
+    //   };
 
 
     var getFileData =
@@ -144,24 +158,26 @@ var jsonToCsv = function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee() {
-        var filePathResults;
+        var filePath, fileData;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                // 取得したfilepath
-                filePathResults = getFilePath(8);
-                console.log(filePathResults);
-                _context.t0 = console;
-                _context.next = 5;
-                return Promise.all(filePathResults.map(fetchFile));
+                filePath = getFilePath(8);
+                _context.next = 3;
+                return filePath.map(function (data) {
+                  return fetch(data).then(function (response) {
+                    response.json().then(function (json) {
+                      JSON.stringify(json, null, ' ');
+                    });
+                  });
+                });
+
+              case 3:
+                fileData = _context.sent;
+                return _context.abrupt("return", fileData);
 
               case 5:
-                _context.t1 = _context.sent;
-
-                _context.t0.log.call(_context.t0, _context.t1);
-
-              case 7:
               case "end":
                 return _context.stop();
             }
@@ -173,51 +189,6 @@ var jsonToCsv = function () {
         return _ref.apply(this, arguments);
       };
     }();
-
-    var fetchFile = function fetchFile(url) {
-      return fetch(url);
-    }; // ボタンをクリックしたとき
-
-
-    function load() {
-      return _load.apply(this, arguments);
-    }
-
-    function _load() {
-      _load = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3() {
-        var data, obj;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return fetch('sample.json');
-
-              case 2:
-                data = _context3.sent;
-                _context3.next = 5;
-                return data.json();
-
-              case 5:
-                obj = _context3.sent;
-                console.log(obj); // 結果: {name: "別所分校", classes: Array(2)}
-                // テキストを出力
-
-                document.querySelector('#log').innerHTML = JSON.stringify(obj, null, '  ');
-
-              case 8:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }));
-      return _load.apply(this, arguments);
-    }
-
-    load(); // JSONファイル取得メソッド
 
     var getJsonFile =
     /*#__PURE__*/
@@ -231,19 +202,21 @@ var jsonToCsv = function () {
               case 0:
                 _context2.next = 2;
                 return new Promise(function (resolve) {
-                  nowLoading.loadStart();
-                  resolve();
+                  nowLoading.loadStart(); // JSONデータ表示用フィールドを一旦削除
+
+                  jsonDataFields.removeDataFileds();
+                  setTimeout(function () {
+                    resolve();
+                  }, 4000);
                 });
 
               case 2:
                 _context2.next = 4;
                 return new Promise(function (resolve) {
-                  getFilePath(8); // JSONデータ表示用フィールドを一旦削除
+                  // JSONデータ表示用フィールドを作成
+                  createFields(8); // JSONデータ表示用フィールドにデータを反映
 
-                  jsonDataFields.removeDataFileds(); // JSONデータ表示用フィールドを生成
-
-                  jsonDataFields.cleateDataFileds(8);
-                  getFileData();
+                  console.log(getFileData());
                   resolve();
                 });
 
@@ -265,8 +238,12 @@ var jsonToCsv = function () {
       return function getJsonFile() {
         return _ref2.apply(this, arguments);
       };
-    }(); // ボタンをクリックしたら
+    }(); // カレンダーが変更させれたら
 
+
+    fileNameDate.addEventListener('change', function () {
+      jsonFileName = fileNameDate.value.split('-').join('');
+    }, false); // ボタンをクリックしたら
 
     getJsonDataBtn.addEventListener('click', function () {
       getJsonFile();
@@ -325,6 +302,13 @@ function () {
       for (var i = 0; i < fileCount; i++) {
         this.dataFieldsArea.insertAdjacentHTML('afterbegin', this.dataFields);
       }
+    } // 表示エリアを取得
+
+  }, {
+    key: "getDataFileds",
+    value: function getDataFileds() {
+      var dataLogs = document.querySelectorAll('.dataLog');
+      return dataLogs;
     } // 表示エリアを削除
 
   }, {
