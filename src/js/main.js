@@ -7,11 +7,6 @@ const jsonToCsv = (() => {
         'DOMContentLoaded',
         () => {
 
-            const fileNameDate = document.querySelector('#fileNameDate');
-            const getJsonDataBtn = document.querySelector('#getJsonDataAll');
-            const getCsvFileBtn = document.querySelector('#getCsvFileAll');
-            let jsonFileName;
-
             // DatePicker classをインスタンス化
             const datePicker = new DatePicker();
             // Loading classをインスタンス化
@@ -19,16 +14,20 @@ const jsonToCsv = (() => {
             // DataFields classをインスタンス化
             const jsonDataFields = new DataFields();
 
-            // デフォルトの日付は当日
-            jsonFileName = fileNameDate.value = datePicker.ymd;
+            const fileNameDate = document.querySelector('#fileNameDate');
+            const getJsonDataBtn = document.querySelector('#getJsonDataAll');
+            const getCsvFileBtn = document.querySelector('#getCsvFileAll');
+            let getDate = fileNameDate.value = datePicker.ymd;
+
+
             // 取得できる日付を当日までにする
-            fileNameDate.setAttribute('max', jsonFileName);
+            fileNameDate.setAttribute('max', getDate);
 
             // 取得するファイルパス
             const getFilePath = count => {
                 const filePath = [];
                 for (let i = 0; i < count; i++) {
-                    filePath.push(`/lib/json/${jsonFileName}_${1 + i}.json`);
+                    filePath.push(`/lib/json/${getDate}_${1 + i}.json`);
                 }
                 return filePath;
             };
@@ -48,25 +47,24 @@ const jsonToCsv = (() => {
                     return fetch(file).then(data => data.json().then(json => JSON.stringify(json, null, ' ')));
                 });
                 // 出力
-                // for (let i = 0; i < dataFields.length; i++) {
-                //     dataFields[i].innerHTML = await getJson[i];
-                // }
-                console.log(await getJson);
-                return await getJson;
+                for (let i = 0; i < dataFields.length; i++) {
+                    dataFields[i].innerHTML = await getJson[i];
+                }
             };
 
-            // CSVダウンロード
-            const handleDownload = (content) => {
-                const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-                const blob = new Blob([bom, content], { "type": "text/csv" });
-
-                if (window.navigator.msSaveBlob) {
-                    window.navigator.msSaveBlob(blob, "test.csv");
-                    // msSaveOrOpenBlobの場合はファイルを保存せずに開ける
-                    window.navigator.msSaveOrOpenBlob(blob, "test.csv");
-                } else {
-                    document.getElementById('getCsvFileAll').href = window.URL.createObjectURL(blob);
+            // フィールドのコンテンツを取得
+            const getFieldContents = () => {
+                const dataFields = jsonDataFields.getDataFileds();
+                const dataContents = [];
+                // 各フィールドのコンテンツを取得する
+                for (let field of dataFields) {
+                    dataContents.push(field.innerHTML);
                 }
+                // 不要なデータを削除
+                const data1 = dataContents[0];
+                console.log(data1);
+
+                return dataContents;
             }
 
             const getJsonFile = async () => {
@@ -84,7 +82,7 @@ const jsonToCsv = (() => {
                     // JSONデータ表示用フィールドを作成
                     createFields(8);
                     // JSONデータ表示用フィールドにデータを反映
-                    console.log(getFileData());
+                    getFileData();
                     resolve();
                 });
                 // loading End
@@ -93,10 +91,11 @@ const jsonToCsv = (() => {
                     resolve();
                 });
             };
+
             fileNameDate.addEventListener(
                 'change',
                 () => {
-                    jsonFileName = fileNameDate.value.split('-').join('');
+                    getDate = fileNameDate.value.split('-').join('');
                 },
                 false
             );
@@ -104,7 +103,8 @@ const jsonToCsv = (() => {
                 getJsonFile();
             });
             getCsvFileBtn.addEventListener('click', () => {
-                handleDownload('hoge');
+                // コンテンツを取得
+                getFieldContents();
             });
         },
         false
