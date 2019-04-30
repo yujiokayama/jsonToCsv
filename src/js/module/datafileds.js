@@ -9,28 +9,27 @@ export class DataFields {
   properties
   //////////////////////////////
   */
-  constructor() {
-    this.dataFieldsArea = document.querySelector('#DataLogArea');
-    this.dataFields = '<pre class="dataLog"></pre>';
-  }
+  constructor() {}
   /*
   //////////////////////////////
   methods
   //////////////////////////////
   */
   // 表示エリアを生成
-  cleateDataFileds(fileCount) {
+  static cleateDataFileds(fileCount) {
+    const dataFieldsArea = document.querySelector('#DataLogArea');
+    const dataFields = '<pre class="dataLog"></pre>';
     for (let i = 0; i < fileCount; i++) {
-      this.dataFieldsArea.insertAdjacentHTML('afterbegin', this.dataFields);
+      dataFieldsArea.insertAdjacentHTML('afterbegin', dataFields);
     }
   }
   // 表示エリアを取得
-  getDataFileds() {
+  static getDataFileds() {
     const dataLogs = document.querySelectorAll('.dataLog');
     return dataLogs;
   }
   // 表示エリアを削除
-  removeDataFileds() {
+  static removeDataFileds() {
     const dataLogs = document.querySelectorAll('.dataLog');
     // すでに表示用エリアがある場合
     if (document.querySelector('.dataLog') != null) {

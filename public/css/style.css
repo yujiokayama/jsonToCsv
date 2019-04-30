@@ -4243,8 +4243,8 @@ input[type="date"]::-webkit-clear-button {
   border-radius: 50%;
   position: relative;
   border: calc(60px * 0.1) solid #1e90ff;
-  -webkit-animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
-          animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
+  -webkit-animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
+          animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
   -webkit-transform: rotate(0deg) scale(1);
           transform: rotate(0deg) scale(1); }
 
@@ -4400,8 +4400,8 @@ input[type="date"]::-webkit-clear-button {
   left: 0;
   border-radius: 50%;
   border: calc(60px * 0.03) solid #1e90ff;
-  -webkit-animation: fulfilling-bouncing-circle-spinner-orbit-animation infinite 4000ms ease;
-          animation: fulfilling-bouncing-circle-spinner-orbit-animation infinite 4000ms ease; }
+  -webkit-animation: fulfilling-bouncing-circle-spinner-orbit-animation infinite 4000ms ease;
+          animation: fulfilling-bouncing-circle-spinner-orbit-animation infinite 4000ms ease; }
 
 .fulfilling-bouncing-circle-spinner .circle {
   height: 60px;
@@ -4411,8 +4411,8 @@ input[type="date"]::-webkit-clear-button {
   border-radius: 50%;
   position: relative;
   border: calc(60px * 0.1) solid #1e90ff;
-  -webkit-animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
-          animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
+  -webkit-animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
+          animation: fulfilling-bouncing-circle-spinner-circle-animation infinite 4000ms ease;
   -webkit-transform: rotate(0deg) scale(1);
           transform: rotate(0deg) scale(1); }
 
@@ -4487,7 +4487,7 @@ input[type="date"]::-webkit-clear-button {
   display: block;
   position: relative;
   left: 7.9rem;
-  top: 2rem;
+  top: 0;
   height: 40px;
   padding: 5px 30px;
   text-align: center;
@@ -4525,6 +4525,30 @@ input[type="date"]::-webkit-clear-button {
     color: #1e90ff; }
     .btn-extend-border:hover:before, .btn-extend-border:hover:after {
       width: 100%; }
+
+#calenderField label {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  border: 2px solid #ccc;
+  border-radius: 15px; }
+
+#calenderField input[type="date"] {
+  position: relative;
+  padding: 0 10px;
+  width: 200px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+
+#calenderField input[type="date"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; }
+
+#calenderField input[type="date"]::-webkit-clear-button {
+  -webkit-appearance: none; }
 
 
 /*# sourceMappingURL=style.css.map*/
