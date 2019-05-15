@@ -14,10 +14,11 @@ const jsonToCsv = (() => {
       const fileNameDate = document.querySelector('#fileNameDate');
       const getJsonDataBtn = document.querySelector('#getJsonDataAll');
       const getCsvFileBtn = document.querySelector('#getCsvFileAll');
-      let getDate = (fileNameDate.value = datePicker.ymd);
+      let getDate = fileNameDate.value = datePicker.ymd;
 
       // 取得できる日付を当日までにする
       fileNameDate.setAttribute('max', getDate);
+
 
       // 取得するファイルパス
       const getFilePath = count => {
@@ -28,6 +29,7 @@ const jsonToCsv = (() => {
         return filePath;
       };
 
+
       // 表示用フィールドを作成
       const createFields = count => {
         // JSONデータ表示用フィールドを生成
@@ -36,15 +38,14 @@ const jsonToCsv = (() => {
 
       // JSONデータを取得＆出力
       const getFileData = async () => {
-        const filePath = getFilePath(8);
+        const filePath = getFilePath(3);
         const dataFields = DataFields.getDataFileds();
 
         // 取得
-        const getJson = await filePath.map(file => {
-          return fetch(file).then(data =>
-            data.json().then(json => JSON.stringify(json, null, ' '))
-          );
+        const getJson = await filePath.map(item => {
+          return fetch(item).then((file) => file.json().then((json) => JSON.stringify(json, null, ' ')));
         });
+
         // 出力
         for (let i = 0; i < dataFields.length; i++) {
           dataFields[i].innerHTML = await getJson[i];
@@ -79,7 +80,7 @@ const jsonToCsv = (() => {
         // getJsonFile
         await new Promise(resolve => {
           // JSONデータ表示用フィールドを作成
-          createFields(8);
+          createFields(3);
           // JSONデータ表示用フィールドにデータを反映
           getFileData();
           resolve();
@@ -105,7 +106,5 @@ const jsonToCsv = (() => {
         // コンテンツを取得
         getFieldContents();
       });
-    },
-    false
-  );
+    }, false);
 })();

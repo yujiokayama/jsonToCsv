@@ -147,7 +147,7 @@ var jsonToCsv = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                filePath = getFilePath(8);
+                filePath = getFilePath(3);
                 dataFields = _module_datafileds__WEBPACK_IMPORTED_MODULE_2__["DataFields"].getDataFileds(); // 取得
 
                 _context.next = 4;
@@ -252,7 +252,7 @@ var jsonToCsv = function () {
                 _context2.next = 4;
                 return new Promise(function (resolve) {
                   // JSONデータ表示用フィールドを作成
-                  createFields(8); // JSONデータ表示用フィールドにデータを反映
+                  createFields(3); // JSONデータ表示用フィールドにデータを反映
 
                   getFileData();
                   resolve();
