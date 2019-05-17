@@ -13,7 +13,8 @@ const jsonToCsv = (() => {
     const fileNameDate = document.querySelector('#datePicker');
     const getJsonDataAllBtn = document.querySelector('#getJsonDataAll');
     const getCsvFileBtn = document.querySelector('#getCsvFileAll');
-    const getDate = datePicker.ymd;
+    let getDate = datePicker.ymd;
+
 
 
     /*
@@ -28,19 +29,7 @@ const jsonToCsv = (() => {
     // 表示用フィールド
     createFields(3);
 
-    /*
-    //////////////////////////////////////////
-    JSONデータをフィールド
-    //////////////////////////////////////////
-    */
 
-
-
-    // デートピッカーを変更したら
-    fileNameDate.addEventListener('change', () => {
-      const selectDate = fileNameDate.value.split('-').join('');
-      getFilePath(selectDate, 3);
-    }, false);
 
     // ダウンロードボタンをクリックしたとき
     getCsvFileBtn.addEventListener('click', () => {
@@ -53,7 +42,17 @@ const jsonToCsv = (() => {
 
     // JSONファイルを一括取得ボタンをクリックしたとき
     getJsonDataAllBtn.addEventListener('click', () => {
+      // 日付を取得するファイルの形式に変更
+      getDate = fileNameDate.value.split('-').join('');
+      // 取得するファイルの数を指定する
+      getFilePath(getDate, 3);
 
+      getJson(`/lib/json/${getDate}_${1}.json`).then(json => {
+        // JSONをオブジェクトに変換
+        return JSON.parse(json);
+      }).then((data) => {
+        console.log(data);
+      })
     }, false);
 
 
@@ -66,15 +65,32 @@ const jsonToCsv = (() => {
 
 
 
-
-
-  // 表示用フィールドを作成
+  /*
+  //////////////////////////////////////////
+  表示用フィールドを作成
+  //////////////////////////////////////////
+  */
   const createFields = count => {
     // JSONデータ表示用フィールドを生成
     DataFields.cleateDataFileds(count);
   };
 
-  // 取得するファイルパス
+  /*
+  //////////////////////////////////////////
+  JSONデータをフィールドに反映
+  //////////////////////////////////////////
+  */
+  const reflectFields = (data) => {
+
+  };
+
+
+
+  /*
+  //////////////////////////////////////////
+  取得するファイルパス
+  //////////////////////////////////////////
+  */
   const getFilePath = (date, count) => {
     const getDate = date;
     const filePath = [];
@@ -84,10 +100,14 @@ const jsonToCsv = (() => {
     return filePath;
   };
 
-  // JSONを取得
-  const getJson = async () => {
+  /*
+  //////////////////////////////////////////
+  JSONを取得
+  //////////////////////////////////////////
+  */
+  const getJson = async (filepath) => {
     // ファイルを読み込む
-    const data = await fetch('./sample.json');
+    const data = await fetch(filepath);
     // JSONとして解析
     const obj = await data.json();
     // 特定のキーと値を削除
@@ -99,7 +119,11 @@ const jsonToCsv = (() => {
     return JSON.stringify(obj.recommended, null, ' ');
   }
 
-  // JSONをCSV形式に変換
+  /*
+  //////////////////////////////////////////
+  JSONをCSV形式に変換
+  //////////////////////////////////////////
+  */
   const jsonToCsv = (json, delimiter) => {
     const header = Object.keys(json[0]).join(delimiter) + '\n';
     const body = json
@@ -114,7 +138,12 @@ const jsonToCsv = (() => {
     return header + body;
   }
 
-  // CSVをダウンロード
+
+  /*
+  //////////////////////////////////////////
+  CSVをダウンロード
+  //////////////////////////////////////////
+  */
   const exportCSV = (items, delimiter, filename) => {
     //文字列に変換する
     const csv = jsonToCsv(items, delimiter);
