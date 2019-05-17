@@ -4,9 +4,13 @@
 <head>
     <meta charset="utf-8">
     <title>jsonToCsv</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script src="./js/polyfill.js"></script>
     <script src="./js/main.js"></script>
-
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
@@ -29,8 +33,9 @@
                             <input type="date" id="datePicker" class="datepicker" min="2019-01-01">
                         </label>
                     </div>
-                    <button id="getJsonDataAll" class="ml-3 asyncLoading">JSONファイルを一括取得</button>
-                    <a id="getCsvFileAll" class="asyncLoading ml-3" href="#">CSV一括ダウンロード</a>
+                    <button id="getJsonDataAll" class="waves-effect waves-light light-blue darken-4 btn ml-3 asyncLoading">JSONファイルを取得</button>
+                    <button id="getCsvFileAll" class="waves-effect waves-light teal accent-4 btn asyncLoading ml-3">CSVに変換してダウンロード</button>
+
                 </div>
 
                 <!-- ここに各JSONファイルを取得する -->

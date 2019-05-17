@@ -5,17 +5,12 @@ import { DataFields } from './module/datafileds';
 const jsonToCsv = (() => {
   document.addEventListener('DOMContentLoaded', () => {
 
-    // DatePicker classをインスタンス化
     const datePicker = new DatePicker();
-    // Loading classをインスタンス化
     const nowLoading = new LoadingAnimation();
-
     const fileNameDate = document.querySelector('#datePicker');
     const getJsonDataAllBtn = document.querySelector('#getJsonDataAll');
     const getCsvFileBtn = document.querySelector('#getCsvFileAll');
     let getDate = datePicker.ymd;
-
-
 
     /*
     //////////////////////////////////////////
@@ -27,43 +22,32 @@ const jsonToCsv = (() => {
     // 取得できる日付を当日までにする
     fileNameDate.setAttribute('max', getDate);
     // 表示用フィールド
-    createFields(3);
+    createFields(1);
 
-
-
-    // ダウンロードボタンをクリックしたとき
+    // ダウンロードをクリックしたとき
     getCsvFileBtn.addEventListener('click', () => {
-      getJson().then(json => {
+      getJson(`/lib/json/${getDate}_${1}.json`).then(json => {
         return JSON.parse(json);
       }).then((data) => {
-        exportCSV(data, ',', 'test');
+        exportCSV(data, ',', `${getDate}_${1}`);
       })
     }, false);
 
-    // JSONファイルを一括取得ボタンをクリックしたとき
+    // 「JSONファイルを一括取得」をクリックしたとき
     getJsonDataAllBtn.addEventListener('click', () => {
       // 日付を取得するファイルの形式に変更
       getDate = fileNameDate.value.split('-').join('');
       // 取得するファイルの数を指定する
-      getFilePath(getDate, 3);
+      const filePath = getFilePath(getDate, 8);
 
-      getJson(`/lib/json/${getDate}_${1}.json`).then(json => {
-        // JSONをオブジェクトに変換
-        return JSON.parse(json);
+      getJson(filePath[0]).then(json => {
+        return json;
       }).then((data) => {
-        console.log(data);
+        reflectFields(data);
       })
     }, false);
 
-
   }, false);
-
-
-
-
-
-
-
 
   /*
   //////////////////////////////////////////
@@ -81,10 +65,11 @@ const jsonToCsv = (() => {
   //////////////////////////////////////////
   */
   const reflectFields = (data) => {
-
+    const dataFields = document.querySelectorAll('.dataLog');
+    for (let i = 0; i < dataFields.length; i++) {
+      dataFields[i].innerHTML = data;
+    }
   };
-
-
 
   /*
   //////////////////////////////////////////
@@ -137,7 +122,6 @@ const jsonToCsv = (() => {
       .join('\n');
     return header + body;
   }
-
 
   /*
   //////////////////////////////////////////
