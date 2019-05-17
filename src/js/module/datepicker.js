@@ -14,7 +14,7 @@ export class DatePicker {
     this.year = this.date.getFullYear();
     this.month = ('0' + (this.date.getMonth() + 1)).slice(-2);
     this.day = ('0' + this.date.getDate()).slice(-2);
-    this.ymd = `${this.year}${this.month}${this.day}`;
+    this.ymd = `${this.year}-${this.month}-${this.day}`;
   }
 
   /*
