@@ -3,51 +3,84 @@ import { LoadingAnimation } from './module/loader';
 import { DataFields } from './module/datafileds';
 
 const jsonToCsv = (() => {
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+      const datePicker = new DatePicker();
+      const nowLoading = new LoadingAnimation();
+      const fileNameDate = document.querySelector('#datePicker');
+      const getfileNumSelect = document.querySelector('#fileNum');
+      const getJsonDataAllBtn = document.querySelector('#getJsonDataAll');
+      const getCsvFileBtn = document.querySelector('#getCsvFileAll');
+      let getDate = datePicker.ymd;
+      let fileNum = 1;
+      let fileTitle = document.querySelector('#fileName');
 
-    const datePicker = new DatePicker();
-    const nowLoading = new LoadingAnimation();
-    const fileNameDate = document.querySelector('#datePicker');
-    const getJsonDataAllBtn = document.querySelector('#getJsonDataAll');
-    const getCsvFileBtn = document.querySelector('#getCsvFileAll');
-    let getDate = datePicker.ymd;
-
-    /*
+      /*
     //////////////////////////////////////////
     初期設定
     //////////////////////////////////////////
     */
-    // デフォルトは当日
-    fileNameDate.setAttribute('value', getDate);
-    // 取得できる日付を当日までにする
-    fileNameDate.setAttribute('max', getDate);
-    // 表示用フィールド
-    createFields(1);
+      // デフォルトは当日
+      fileNameDate.setAttribute('value', getDate);
+      // 取得できる日付を当日までにする
+      fileNameDate.setAttribute('max', getDate);
+      // 表示用フィールド
+      createFields(1);
+      fileTitle.textContent = 'Unselected';
 
-    // ダウンロードをクリックしたとき
-    getCsvFileBtn.addEventListener('click', () => {
-      getJson(`/lib/json/${getDate}_${1}.json`).then(json => {
-        return JSON.parse(json);
-      }).then((data) => {
-        exportCSV(data, ',', `${getDate}_${1}`);
-      })
-    }, false);
+      // ダウンロードをクリックしたとき
+      getCsvFileBtn.addEventListener(
+        'click',
+        () => {
+          getJson(`/lib/json/${getDate}_${fileNum}.json`)
+            .then(json => {
+              return JSON.parse(json);
+            })
+            .then(data => {
+              exportCSV(data, ',', `${getDate}_${fileNum}`);
+            });
+        },
+        false
+      );
 
-    // 「JSONファイルを一括取得」をクリックしたとき
-    getJsonDataAllBtn.addEventListener('click', () => {
-      // 日付を取得するファイルの形式に変更
-      getDate = fileNameDate.value.split('-').join('');
-      // 取得するファイルの数を指定する
-      const filePath = getFilePath(getDate, 8);
+      // 「JSONファイルを取得」をクリックしたとき
+      getJsonDataAllBtn.addEventListener(
+        'click',
+        () => {
+          // 日付を取得するファイルの形式に変更
+          getDate = fileNameDate.value.split('-').join('');
+          const filePath = getFilePath(getDate, fileNum);
+          getJson(filePath)
+            .then(json => {
+              nowLoading.loadStart();
+              return json;
+            })
+            .then(data => {
+              reflectFields(data);
+              fileTitle.textContent = `${getDate}_${fileNum}.json`;
+              getCsvFileBtn.disabled = '';
+              nowLoading.loadEnd();
+            })
+            .catch(() => {
+              nowLoading.loadEnd();
+              getCsvFileBtn.disabled = true;
+              reflectFields('');
+              fileTitle.textContent = 'not found';
+              alert(`${getDate}_${fileNum}.jsonが取得できませんでした`);
+            });
+        },
+        false
+      );
 
-      getJson(filePath[0]).then(json => {
-        return json;
-      }).then((data) => {
-        reflectFields(data);
-      })
-    }, false);
-
-  }, false);
+      // プルダウン変更イベントを監視
+      getfileNumSelect.addEventListener('change', () => {
+        const value = getfileNumSelect.value;
+        fileNum = value;
+      });
+    },
+    false
+  );
 
   /*
   //////////////////////////////////////////
@@ -64,7 +97,7 @@ const jsonToCsv = (() => {
   JSONデータをフィールドに反映
   //////////////////////////////////////////
   */
-  const reflectFields = (data) => {
+  const reflectFields = data => {
     const dataFields = document.querySelectorAll('.dataLog');
     for (let i = 0; i < dataFields.length; i++) {
       dataFields[i].innerHTML = data;
@@ -76,21 +109,33 @@ const jsonToCsv = (() => {
   取得するファイルパス
   //////////////////////////////////////////
   */
-  const getFilePath = (date, count) => {
+  // const getFilePaths = (date, count) => {
+  //   const getDate = date;
+  //   const filePath = [];
+  //   for (let i = 0; i < count; i++) {
+  //     filePath.push(`/lib/json/${getDate}_${1 + i}.json`);
+  //   }
+  //   return filePath;
+  // };
+
+  const getFilePath = (date, num) => {
     const getDate = date;
-    const filePath = [];
-    for (let i = 0; i < count; i++) {
-      filePath.push(`/lib/json/${getDate}_${1 + i}.json`);
-    }
-    return filePath;
+    return `/lib/json/${getDate}_${num}.json`;
   };
+
+  /*
+  //////////////////////////////////////////
+  filenameを取得
+  //////////////////////////////////////////
+  */
+  const getFileName = () => {};
 
   /*
   //////////////////////////////////////////
   JSONを取得
   //////////////////////////////////////////
   */
-  const getJson = async (filepath) => {
+  const getJson = async filepath => {
     // ファイルを読み込む
     const data = await fetch(filepath);
     // JSONとして解析
@@ -102,7 +147,7 @@ const jsonToCsv = (() => {
     obj.recommended.splice(0, 1);
     // JSONデータを最終整形
     return JSON.stringify(obj.recommended, null, ' ');
-  }
+  };
 
   /*
   //////////////////////////////////////////
@@ -112,16 +157,16 @@ const jsonToCsv = (() => {
   const jsonToCsv = (json, delimiter) => {
     const header = Object.keys(json[0]).join(delimiter) + '\n';
     const body = json
-      .map(function (d) {
+      .map(function(d) {
         return Object.keys(d)
-          .map(function (key) {
+          .map(function(key) {
             return d[key];
           })
           .join(delimiter);
       })
       .join('\n');
     return header + body;
-  }
+  };
 
   /*
   //////////////////////////////////////////
@@ -153,15 +198,5 @@ const jsonToCsv = (() => {
         document.body.removeChild(link);
       }
     }
-  }
-
-
-
-
-
-
-
-
-
-
+  };
 })();

@@ -1,57 +1,78 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>jsonToCsv</title>
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script src="./js/polyfill.js"></script>
     <script src="./js/main.js"></script>
-    <link rel="stylesheet" href="./css/style.css">
-</head>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
 
-<body>
+  <body>
     <div class="loadingActiveLayer"></div>
     <div class="loadingIcon center-position">
-        <div class="fulfilling-bouncing-circle-spinner">
-            <div class="circle"></div>
-            <div class="orbit"></div>
-        </div>
+      <div class="fulfilling-bouncing-circle-spinner">
+        <div class="circle"></div>
+        <div class="orbit"></div>
+      </div>
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-
-                <div class="d-flex">
-                    <div id="calenderField">
-                        <label>
-                            <input type="date" id="datePicker" class="datepicker" min="2019-01-01">
-                        </label>
-                    </div>
-                    <button id="getJsonDataAll" class="waves-effect waves-light light-blue darken-4 btn ml-3 asyncLoading">JSONファイルを取得</button>
-                    <button id="getCsvFileAll" class="waves-effect waves-light teal accent-4 btn asyncLoading ml-3">CSVに変換してダウンロード</button>
-
-                </div>
-
-                <!-- ここに各JSONファイルを取得する -->
-                <div id="DataLogArea">
-
-                </div>
-
+      <div class="row">
+        <div class="col-12">
+          <h1 class="title">JsonToCsv</h1>
+          <div class="d-flex">
+            <div id="calenderField">
+              <label>
+                <input
+                  type="date"
+                  id="datePicker"
+                  class="datepicker"
+                  min="2019-01-01"
+                />
+              </label>
             </div>
+            <select id="fileNum" class="browser-default">
+              <option value="" disabled selected
+                >取得するファイル番号を指定</option
+              >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+            <button
+              id="getJsonDataAll"
+              class="waves-effect waves-light light-blue darken-4 btn ml-3 asyncLoading"
+            >
+              Get JSON
+            </button>
+            <button
+              id="getCsvFileAll"
+              class="waves-effect waves-light teal accent-4 btn asyncLoading ml-3"
+              disabled
+            >
+              CSV DownLoad
+            </button>
+          </div>
+
+          <!-- ここに各JSONファイルを取得する -->
+          <h2 class="title-sub">filename: <span id="fileName"></span></h2>
+          <div id="DataLogArea"></div>
         </div>
+      </div>
     </div>
-
-
-
-
-
-
-</body>
-
+  </body>
 </html>

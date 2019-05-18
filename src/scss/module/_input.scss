@@ -7,7 +7,7 @@
     border: 2px solid #ccc;
     border-radius: 15px;
   }
-  input[type="date"] {
+  input[type='date'] {
     position: relative;
     padding: 0 10px;
     width: 200px;
@@ -17,10 +17,16 @@
     box-sizing: border-box;
   }
 
-  input[type="date"]::-webkit-inner-spin-button {
+  input[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  input[type="date"]::-webkit-clear-button {
+  input[type='date']::-webkit-clear-button {
     -webkit-appearance: none;
   }
+}
+
+#fileNum {
+  width: 250px;
+  height: 40px;
+  margin: 0 1rem;
 }
