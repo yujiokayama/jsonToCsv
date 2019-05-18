@@ -15,6 +15,7 @@ const jsonToCsv = (() => {
       let getDate = datePicker.ymd;
       let fileNum = 1;
       let fileTitle = document.querySelector('#fileName');
+      let fileCheck = false;
 
       /*
     //////////////////////////////////////////
@@ -59,12 +60,18 @@ const jsonToCsv = (() => {
             .then(data => {
               reflectFields(data);
               fileTitle.textContent = `${getDate}_${fileNum}.json`;
-              getCsvFileBtn.disabled = '';
+              fileCheck = true;
+              if (fileCheck == true) {
+                getCsvFileBtn.disabled = '';
+              }
               nowLoading.loadEnd();
             })
             .catch(() => {
               nowLoading.loadEnd();
-              getCsvFileBtn.disabled = true;
+              fileCheck = false;
+              if (fileCheck == false) {
+                getCsvFileBtn.disabled = true;
+              }
               reflectFields('');
               fileTitle.textContent = 'not found';
               alert(`${getDate}_${fileNum}.jsonが取得できませんでした`);
@@ -77,6 +84,10 @@ const jsonToCsv = (() => {
       getfileNumSelect.addEventListener('change', () => {
         const value = getfileNumSelect.value;
         fileNum = value;
+        fileCheck = false;
+        if (fileCheck == false) {
+          getCsvFileBtn.disabled = true;
+        }
       });
     },
     false
