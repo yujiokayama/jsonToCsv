@@ -29,6 +29,7 @@ const jsonToCsv = (() => {
       // 表示用フィールド
       createFields(1);
       fileTitle.textContent = 'Unselected';
+      getJsonDataAllBtn.disabled = true;
 
       // ダウンロードをクリックしたとき
       getCsvFileBtn.addEventListener(
@@ -84,6 +85,8 @@ const jsonToCsv = (() => {
       getfileNumSelect.addEventListener('change', () => {
         const value = getfileNumSelect.value;
         fileNum = value;
+        getJsonDataAllBtn.disabled = '';
+
         fileCheck = false;
         if (fileCheck == false) {
           getCsvFileBtn.disabled = true;
@@ -161,9 +164,9 @@ const jsonToCsv = (() => {
   const jsonToCsv = (json, delimiter) => {
     const header = Object.keys(json[0]).join(delimiter) + '\n';
     const body = json
-      .map(function(d) {
+      .map(function (d) {
         return Object.keys(d)
-          .map(function(key) {
+          .map(function (key) {
             return d[key];
           })
           .join(delimiter);
@@ -182,10 +185,12 @@ const jsonToCsv = (() => {
     const csv = jsonToCsv(items, delimiter);
     //拡張子
     const extention = delimiter == ',' ? 'csv' : 'tsv';
+    // bom
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
     //出力ファイル名
     const exportedFilenmae = (filename || 'export') + '.' + extention;
     //BLOBに変換
-    const blob = new Blob([csv], { type: 'text/csv; charset=utf-8;' });
+    const blob = new Blob([bom, csv], { type: 'text/csv; charset=utf-8;' });
     if (navigator.msSaveBlob) {
       // for IE 10+
       navigator.msSaveBlob(blob, exportedFilenmae);
@@ -203,4 +208,5 @@ const jsonToCsv = (() => {
       }
     }
   };
+
 })();
