@@ -6,6 +6,8 @@ const jsonToCsv = (() => {
   document.addEventListener(
     'DOMContentLoaded',
     () => {
+      const pathname = window.location.pathname;
+      const directory = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
       const datePicker = new DatePicker();
       const nowLoading = new LoadingAnimation();
       const fileNameDate = document.querySelector('#datePicker');
@@ -31,11 +33,12 @@ const jsonToCsv = (() => {
       fileTitle.textContent = 'Unselected';
       getJsonDataAllBtn.disabled = true;
 
+
       // ダウンロードをクリックしたとき
       getCsvFileBtn.addEventListener(
         'click',
         () => {
-          getJson(`/lib/json/${getDate}_${fileNum}.json`)
+          getJson(directory + `lib/json/${getDate}_${fileNum}.json`)
             .then(json => {
               return JSON.parse(json);
             })
@@ -123,18 +126,9 @@ const jsonToCsv = (() => {
   取得するファイルパス
   //////////////////////////////////////////
   */
-  // const getFilePaths = (date, count) => {
-  //   const getDate = date;
-  //   const filePath = [];
-  //   for (let i = 0; i < count; i++) {
-  //     filePath.push(`/lib/json/${getDate}_${1 + i}.json`);
-  //   }
-  //   return filePath;
-  // };
-
   const getFilePath = (date, num) => {
     const getDate = date;
-    return `/lib/json/${getDate}_${num}.json`;
+    return directory + `lib/json/${getDate}_${num}.json`;
   };
 
   /*
