@@ -3,11 +3,13 @@ import { LoadingAnimation } from './module/loader';
 import { DataFields } from './module/datafileds';
 
 const jsonToCsv = (() => {
+
+  const pathname = window.location.pathname;
+  const directory = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
+
   document.addEventListener(
     'DOMContentLoaded',
     () => {
-      const pathname = window.location.pathname;
-      const directory = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
       const datePicker = new DatePicker();
       const nowLoading = new LoadingAnimation();
       const fileNameDate = document.querySelector('#datePicker');
@@ -161,7 +163,7 @@ const jsonToCsv = (() => {
       .map(function (d) {
         return Object.keys(d)
           .map(function (key) {
-            return d[key];
+            return `"d[key]"`;
           })
           .join(delimiter);
       })

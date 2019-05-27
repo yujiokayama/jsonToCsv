@@ -107,9 +107,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var jsonToCsv = function () {
+  var pathname = window.location.pathname;
+  var directory = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
   document.addEventListener('DOMContentLoaded', function () {
-    var pathname = window.location.pathname;
-    var directory = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
     var datePicker = new _module_datepicker__WEBPACK_IMPORTED_MODULE_0__["DatePicker"]();
     var nowLoading = new _module_loader__WEBPACK_IMPORTED_MODULE_1__["LoadingAnimation"]();
     var fileNameDate = document.querySelector('#datePicker');
@@ -279,7 +279,7 @@ var jsonToCsv = function () {
     var header = Object.keys(json[0]).join(delimiter) + '\n';
     var body = json.map(function (d) {
       return Object.keys(d).map(function (key) {
-        return d[key];
+        return "\"d[key]\"";
       }).join(delimiter);
     }).join('\n');
     return header + body;
